@@ -19,46 +19,50 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const { email, password } = loginData;
+  const { email, password } = loginData;
 
-    if (!email || !password) {
-      toast.error("Email and password are required");
-      return;
-    }
+  if (!email || !password) {
+    toast.error("Email and password are required");
+    return;
+  }
 
-    try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/auth/login`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(loginData)
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        toast.error(result?.message || "Login failed");
-        return;
       }
+    );
 
-      // ✅ Save token (later you can switch to cookies)
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+    const result = await response.json();
 
-      toast.success("Login successful 🎉");
-
-      setTimeout(() => {
-        navigate("/home");
-      }, 1000);
-
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Server error, please try again");
+    if (!response.ok) {
+      toast.error(result?.message || "Login failed");
+      return;
     }
-  };
+
+    // ✅ Save auth data
+    localStorage.setItem("token", result.jwtToken || result.token);
+    localStorage.setItem("user", JSON.stringify(result.user));
+
+    toast.success("Login successful 🎉");
+
+    setTimeout(() => {
+      navigate("/home");
+    }, 1000);
+
+  } catch (error) {
+    console.error("Login error:", error);
+    toast.error("Server error, please try again");
+  }
+};
+
 
   return (
     <section className="min-h-screen bg-black flex items-center justify-center px-4">

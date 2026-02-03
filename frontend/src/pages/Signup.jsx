@@ -20,47 +20,50 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const { name, email, password } = signupData;
+  const { name, email, password } = signupData;
 
-    if (!name || !email || !password) {
-      toast.error("All fields are required");
-      return;
-    }
+  if (!name || !email || !password) {
+    toast.error("All fields are required");
+    return;
+  }
 
-    try {
-      const response = await fetch("http://localhost:8080/auth/signup", {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/auth/signup`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(signupData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        const message =
-          result?.error ||
-          result?.message ||
-          "Signup failed";
-
-        toast.error(message);
-        return;
       }
+    );
 
-      // ✅ Success
-      toast.success("Signup successful 🎉");
+    const result = await response.json();
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("Server error, please try again");
+    if (!response.ok) {
+      const message =
+        result?.error ||
+        result?.message ||
+        "Signup failed";
+
+      toast.error(message);
+      return;
     }
-  };
+
+    toast.success("Signup successful 🎉");
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 1000);
+  } catch (error) {
+    console.error("Signup error:", error);
+    toast.error("Server error, please try again");
+  }
+};
+
 
   return (
     <>

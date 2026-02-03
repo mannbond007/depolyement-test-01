@@ -38,31 +38,35 @@ const Home = () => {
   };
 
   // fetch products api call
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/products", {
+const fetchProducts = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/products`,
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast.error(data.message || "Failed to fetch products");
-        return;
       }
+    );
 
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      toast.error("Error fetching products");
-    } finally {
-      setLoadingProducts(false);
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast.error(data.message || "Failed to fetch products");
+      return;
     }
-  };
+
+    setProducts(data);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    toast.error("Error fetching products");
+  } finally {
+    setLoadingProducts(false);
+  }
+};
+
 
   useEffect(() => {
     const user = localStorage.getItem("user");
