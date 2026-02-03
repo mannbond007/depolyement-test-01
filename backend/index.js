@@ -14,6 +14,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("The server is up and running...");
+});
+
 app.use("/auth", authRouter);
 
 app.use("/products", productRouter);
